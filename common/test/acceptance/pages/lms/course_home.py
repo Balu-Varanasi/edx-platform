@@ -181,12 +181,13 @@ class CourseOutlinePage(PageObject):
             subsection_index: A 0-based index of the subsection to navigate to.
 
         """
+        import pudb.b
         try:
             section_title = self._section_titles()[section_index]
         except IndexError:
             raise ValueError("Section index '{0}' is out of range.".format(section_index))
         try:
-            subsection_title = self._subsection_titles(section_index + 1)[subsection_index]
+            subsection_title = self._subsection_titles(section_index)[subsection_index]
         except IndexError:
             raise ValueError("Subsection index '{0}' in section index '{1}' is out of range.".format(
                 subsection_index, section_index
