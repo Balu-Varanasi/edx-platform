@@ -101,14 +101,13 @@ class EntitlementViewSet(viewsets.ModelViewSet):
     filter_class = CourseEntitlementFilter
     pagination_class = EntitlementsPagination
 
-    def set_policy(self, entitlement):
+    def set_policy(self, entitlement, site):
         """
         Find the appropriate Course Entitlement Policy for the mode and site of the entitlement and assign it to the 
         Course Entitlement, otherwise it assigns the default policy to the Course Entitlement.
         """
-        policy = CourseEntitlementPolicy.objects.filter(site=entitlement.site, mode=entitlement.mode)
-        policy = policy if policy else CourseEntitlementPolicy()
-        entitlement.policy(policy)
+        policy = CourseEntitlementPolicy.objects.filter(site=site, mode=entitlement.mode).first()
+        entitlement.policy = policy if policy else CourseEntitlementPolicy()
 
     def get_queryset(self):
         user = self.request.user
@@ -136,7 +135,7 @@ class EntitlementViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
 
         entitlement = serializer.instance
-        self.set_policy(entitlement)
+        self.set_policy(entitlement, request.site)
 
         if support_details:
             for support_detail in support_details:
