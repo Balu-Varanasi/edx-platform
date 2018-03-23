@@ -127,7 +127,7 @@ class CourseOutlinePage(PageObject):
             if not section_index:
                 return
         else:
-            section_index = 1
+            section_index = 0
 
         sections = self._get_sections_as_selenium_webelements()
         subsections = self._get_subsections(sections[section_index])
@@ -152,7 +152,8 @@ class CourseOutlinePage(PageObject):
             go_to_section("Week 1", "Lesson 1")
         """
         subsection_webelements = self._get_subsections_as_selenium_webelements()
-        subsection_titles = [self._get_outline_element_title(sub_webel) for sub_webel in subsection_webelements]
+        subsection_titles = [self._get_outline_element_title(sub_webel) 
+                             for sub_webel in subsection_webelements]
 
         try:
             subsection_index = subsection_titles.index(unicode(subsection_title))
@@ -253,6 +254,8 @@ class CourseOutlinePage(PageObject):
         )
 
     def _get_outline_structure_as_dictionary(self):
+        '''
+        '''
         outline_dict = OrderedDict()
         outline_sections = self._get_sections_as_selenium_webelements()
 
@@ -264,14 +267,14 @@ class CourseOutlinePage(PageObject):
             outline_dict[section_title] = subsection_titles
         return outline_dict
 
-    def _is_section_fold_expanded(self, section):
-        section_button = section.find_element_by_css_selector('.section-name.accordion-trigger')
-        return self._is_html_element_aria_expanded(section_button)
+    # def _is_section_fold_expanded(self, section):
+    #     section_button = section.find_element_by_css_selector('.section-name.accordion-trigger')
+    #     return self._is_html_element_aria_expanded(section_button)
 
-    def _is_subsection_fold_expanded(self, subsection):
-        subsection_button = subsection.find_element_by_css_selector(
-            '.subsection-text.accordion-trigger')
-        return self._is_html_element_aria_expanded(subsection_button)
+    # def _is_subsection_fold_expanded(self, subsection):
+    #     subsection_button = subsection.find_element_by_css_selector(
+    #         '.subsection-text.accordion-trigger')
+    #     return self._is_html_element_aria_expanded(subsection_button)
 
     @staticmethod
     def _is_html_element_aria_expanded(html_element):
@@ -298,14 +301,18 @@ class CourseOutlinePage(PageObject):
         return self.q(css=self._subsection_selector).results
 
     def _expand_all_outline_folds(self):
-        sections = [section for section in self.q(css=self._section_selector)]
+        '''
+        '''
+        sections = self.q(css='.section-name.accordion-trigger')
+        # sections = [section for section in self.q(css=self._section_selector)]
         for section in sections:
-            if not self._is_section_fold_expanded(section):
+            if not self._is_html_element_aria_expanded(section):
                 section.click()
 
-        subsections = [subsection for subsection in self.q(css=self._subsection_selector)]
+        subsections = self.q(css='.subsection-text.accordion-trigger')
+        # subsections = [subsection for subsection in self.q(css=self._subsection_selector)]
         for subsection in subsections:
-            if not self._is_subsection_fold_expanded(subsection):
+            if not self._is_html_element_aria_expanded(subsection):
                 subsection.click()
 
 
