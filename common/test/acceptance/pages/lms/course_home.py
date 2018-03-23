@@ -181,7 +181,6 @@ class CourseOutlinePage(PageObject):
             subsection_index: A 0-based index of the subsection to navigate to.
 
         """
-        import pudb.b
         try:
             section_title = self._section_titles()[section_index]
         except IndexError:
